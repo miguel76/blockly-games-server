@@ -1,0 +1,132 @@
+<html>
+  <head>
+    <title>Esonero n. 2 del corso di Informatica e Tecnologie della Comunicazione Digitale</title>
+    <link href="https://cdn.jsdelivr.net/primer/3.0.1/primer.css" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+      var appLevels = {
+        'maze': 10,
+        'bird': 10,
+        'turtle': 10,
+        'movie': 10,
+        'pond-tutor': 10,
+        'pond-duck': 1
+      };
+
+      var socket = null;
+
+      function setupSocket() {
+        socket = io();
+        socket.on('error', function(errorData) {
+          console.warn('Error connecting to server socket:' + errorData);
+        });
+        socket.on('data-saved', function(data) {
+          alert("I dati sono stati sottomessi. In caso di sottomissioni multiple, soltanto l'ultima sarà considerata.");
+        });
+      }
+
+      function getData() {
+        var localData = {};
+        for (var app in appLevels) {
+          for (var j = 1; j <= appLevels[app]; j++) {
+            var key = app + j;
+            var value = window.localStorage[key];
+            if (value) {
+              localData[key] = value;
+            }
+          }
+        }
+        return localData;
+      }
+
+      var logData = function(workspace, event, options) {
+        var firstName = document.getElementById("firstName").value;
+        var surname = document.getElementById("surname").value;
+        var studentId = document.getElementById("studentId").value;
+        if (!firstName) {
+          alert('Il campo Nome deve essere valorizzato');
+          return false;
+        }
+        if (!surname) {
+          alert('Il campo Cognome deve essere valorizzato');
+          return false;
+        }
+        if (!studentId) {
+          alert('Il campo Matricola deve essere valorizzato');
+          return false;
+        }
+        var data = getData();
+        console.log(data);
+        if (socket) {
+          socket.emit('save-data', {firstName: firstName, surname: surname, studentId: studentId, data: data} );
+        }
+        return false;
+      };
+
+      function updateList() {
+        var listHTML = '';
+        for (var app in appLevels) {
+          var levelsDone = 0;
+          for (var j = 1; j <= appLevels[app]; j++) {
+            var key = app + j;
+            var value = window.localStorage[key];
+            if (value) {
+              levelsDone++;
+            }
+          }
+          listHTML += '<li>' + app + ': ' + levelsDone + ' di ' + appLevels[app] + '</li>';
+        }
+        document.getElementById('levels').innerHTML = listHTML;
+      }
+
+      function setup() {
+        updateList();
+        setupSocket();
+      }
+    </script>
+  </head>
+  <body onload="setup()">
+    <div class="container">
+    <h2>Esonero n. 2 del corso di <a href="http://miguel76.io/InfoCoRiS">Informatica e Tecnologie della Comunicazione Digitale</a></h2>
+    <h3>Istruzioni</h3>
+    <p>
+      Eseguite le seguenti istruzioni.
+      Potete risolvere gli esercizi in più sessioni perché i dati dei livelli superati vengono salvati sul browser
+      e recuperati anche se si spegne e riaccende.
+      <ol>
+        <li>Seguire <a href="bg-it/index.html">questo link (Italiano)</a> o <a href="bg-en/index.html">questo (English)</a> e provare a completare tutti i livelli di ciascuno degli esercizi (Puzzle non è necessario)</li>
+        <li>Tornare a questa pagina e controllare che i livelli superati risultino nella sezione "Livelli Completati"</li>
+        <li>Inserire Nome, Cognome e Matricola e sottomettere (si può sottomettere più volte, vale l'ultima sottomissione)</li>
+      </ol>
+    </p>
+    <h3>Nota Bene</h3>
+    <p>
+      Nel caso che uno studente debba usare la stessa postazione usata già da un altro studente,
+      dovrà prima cancellare le risposte precedenti con il tasto "Pulisci dati" (in Inglese "Clear data") della pagina di Menu.
+      Sottomissioni multiple con gli stessi dati delle risposte ma diversa matricola comporteranno l'annullamento dell'esonero degli studenti coinvolti.
+    </p>
+    <h3>Livelli Completati</h3>
+    <p>
+      Di seguito trovate i livelli che avete completato sul numero totale di livelli per ogni tipo di esercizio.
+      <input type="button" name="Aggiorna" value="Aggiorna" onclick="javascript: updateList()"></button>
+      <ul id="levels"></ul>
+    </p>
+    <h3>Sottomissione</h3>
+    <p>
+      <form>
+        Nome: <input name="Nome" id="firstName"></input>
+        Cognome: <input name="Cognome" id="surname"></input>
+        Matricola: <input name="Matricola" id="studentId"></input>
+        <input type="button" name="Sottometti" value="Sottometti" onclick="javascript: logData()"></button>
+      </form>
+    </p>
+    <!-- <h2>Repository</h2>
+    <p><a href="https://github.com/miguel76/SparqlBlocks">miguel76/SparqlBlocks</a></p> -->
+    <!-- <h2>Online Demo</h2>
+    <p><a href="demo">Follow the link</a></p> -->
+    <!-- <h2>Documentation</h2>
+    <p>coming soon...</p> -->
+  </div>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "blockly-games-server",
+  "version": "0.1.0",
+  "description": "A server for blockly-games",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./bin/www",
+    "preinstall": "npm update"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguel76/blockly-games-server.git"
+  },
+  "author": "Miguel Ceriani <miguel.ceriani@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/miguel76/blockly-games-server/issues"
+  },
+  "homepage": "https://github.com/miguel76/blockly-games-server#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "loggly": "^1.1.0",
+    "socket.io": "^1.4.8",
+    "winston": "^2.2.0",
+    "winston-aws-cloudwatch": "^1.4.0",
+    "winston-loggly-bulk": "^1.3.3"
+  }
+}
