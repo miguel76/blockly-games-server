@@ -37,7 +37,7 @@ module.exports = function (httpServer) {
         var eventType = event.type ? event.type : defaultType;
         winston.log('info', eventType, event);
         if (eventType === 'save-data') {
-          io.emit('data-saved');
+          socket.emit('data-saved');
         }
       };
     };
